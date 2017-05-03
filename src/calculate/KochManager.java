@@ -5,19 +5,18 @@
  */
 package calculate;
 
+import jsf31kochfractalfx.JSF31KochFractalFX;
+import timeutil.TimeStamp;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jsf31kochfractalfx.JSF31KochFractalFX;
-import timeutil.TimeStamp;
 
 /**
  *
@@ -52,25 +51,26 @@ public class KochManager  {
     //maakt een instantie van de callable class
         KochLeftCallable klc = new KochLeftCallable(list,nxt);
         KochRightCallable krc = new KochRightCallable(list,nxt);
-        KochBottomCallable kbc = new KochBottomCallable(list,nxt);
-        
+        //KochBottomCallable kbc = new KochBottomCallable(list,nxt);
+
         
         leftCall = executor.submit(klc);
         rightCall = executor.submit(krc);
-        bottomCall = executor.submit(kbc);
+        //bottomCall = executor.submit(kbc);
+
+        new Thread(new KochBottomTask(list,nxt)).start();
         
         
         try {
             list.addAll(leftCall.get());
             list.addAll(rightCall.get());
-            list.addAll(bottomCall.get());
+            //list.addAll(bottomCall.get());
         } catch (InterruptedException ex) {
             Logger.getLogger(KochManager.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
             Logger.getLogger(KochManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         application.setTextCalc(time.toString());
-        //join gaat toch pas verder als alle threads af zijn dus ik hoef geen COUNT bij te gaan houden.
         application.requestDrawEdges();
         
         
