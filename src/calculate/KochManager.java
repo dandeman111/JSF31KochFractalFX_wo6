@@ -5,18 +5,16 @@
  */
 package calculate;
 
+import javafx.scene.paint.Color;
 import jsf31kochfractalfx.JSF31KochFractalFX;
 import timeutil.TimeStamp;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -45,31 +43,25 @@ public class KochManager  {
     //maakt de threadpool
         ExecutorService executor = Executors.newFixedThreadPool(10);
     //maakt de lijst met future objecten
-        Future<List<Edge>> leftCall;
-        Future<List<Edge>> rightCall;
-        Future<List<Edge>> bottomCall;
+        final Future<List<Edge>> leftCall;
+        final Future<List<Edge>> rightCall;
+        final Future<List<Edge>> bottomCall;
     //maakt een instantie van de callable class
-        KochLeftCallable klc = new KochLeftCallable(list,nxt);
-        KochRightCallable krc = new KochRightCallable(list,nxt);
-        //KochBottomCallable kbc = new KochBottomCallable(list,nxt);
+        KochLeftTask klt = new KochLeftTask(list,nxt,this,application.pbLeft);
+        KochRightTask  krt = new KochRightTask(list,nxt);
+        KochBottomTask kbt = new KochBottomTask(list,nxt);
+
+
+        executor.submit(kbt);
+        executor.submit(krt);
+        executor.submit(klt);
+
 
         
-        leftCall = executor.submit(klc);
-        rightCall = executor.submit(krc);
-        //bottomCall = executor.submit(kbc);
 
-        new Thread(new KochBottomTask(list,nxt)).start();
-        
-        
-        try {
-            list.addAll(leftCall.get());
-            list.addAll(rightCall.get());
-            //list.addAll(bottomCall.get());
-        } catch (InterruptedException ex) {
-            Logger.getLogger(KochManager.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(KochManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+
+
         application.setTextCalc(time.toString());
         application.requestDrawEdges();
         
@@ -88,6 +80,17 @@ public class KochManager  {
         application.setTextDraw(time.toString());
         application.setTextNrEdges(Integer.toString(koch.getNrOfEdges()));
     }
-    
+
+    public synchronized void drawOneEdge(){
+        for(Edge e : this.list){
+            Color color = e.color;
+            e.color = Color.WHITE;
+            this.application.drawEdge(e);
+            e.color = color;
+        }
+    }
+    public synchronized void addEdge(Edge e){
+        list.add(e);
+    }
 
 }

@@ -4,7 +4,8 @@
  */
 package jsf31kochfractalfx;
 
-import calculate.*;
+import calculate.Edge;
+import calculate.KochManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -12,10 +13,13 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.*;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.*;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -50,6 +54,15 @@ public class JSF31KochFractalFX extends Application {
     private Label labelCalcText;
     private Label labelDraw;
     private Label labelDrawText;
+
+    //Progress bar
+    public ProgressBar pbLeft;
+    public ProgressBar pbRight;
+    public ProgressBar pbBottom;
+
+    private Label lblLeft;
+    private Label lblRight;
+    private Label lblBottom;
     
     // Koch panel and its size
     private Canvas kochPanel;
@@ -73,7 +86,23 @@ public class JSF31KochFractalFX extends Application {
         // Drawing panel for Koch fractal
         kochPanel = new Canvas(kpWidth,kpHeight);
         grid.add(kochPanel, 0, 3, 25, 1);
-        
+
+        //Progress bar
+        pbLeft = new ProgressBar();
+        lblLeft = new Label("Progres Left: ");
+        grid.add(pbLeft, 5,7);
+        grid.add(lblLeft,0,7);
+
+        pbRight = new ProgressBar();
+        lblRight = new Label("Progres Right: ");
+        grid.add(pbRight,5,8);
+        grid.add(lblRight,0,8);
+
+        pbBottom = new ProgressBar();
+        lblBottom = new Label("Progres Bottom: ");
+        grid.add(pbBottom,5,9);
+        grid.add(lblBottom,0,9);
+
         // Labels to present number of edges for Koch fractal
         labelNrEdges = new Label("Nr edges:");
         labelNrEdgesText = new Label();
@@ -128,7 +157,7 @@ public class JSF31KochFractalFX extends Application {
             }
         });
         grid.add(buttonFitFractal, 14, 6);
-        
+
         // Add mouse clicked event to Koch panel
         kochPanel.addEventHandler(MouseEvent.MOUSE_CLICKED,
             new EventHandler<MouseEvent>() {
