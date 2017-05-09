@@ -48,24 +48,16 @@ public class KochManager  {
         final Future<List<Edge>> bottomCall;
     //maakt een instantie van de callable class
         KochLeftTask klt = new KochLeftTask(list,nxt,this,application.pbLeft);
-        KochRightTask  krt = new KochRightTask(list,nxt);
-        KochBottomTask kbt = new KochBottomTask(list,nxt);
-
+        KochRightTask  krt = new KochRightTask(list,nxt, this, application.pbRight);
+        KochBottomTask kbt = new KochBottomTask(list,nxt, this, application.pbBottom);
 
         executor.submit(kbt);
         executor.submit(krt);
         executor.submit(klt);
-
-
-        
-
-
-
-
         application.setTextCalc(time.toString());
         application.requestDrawEdges();
-        
-        
+
+
         System.out.println(list.size());
     }
     
