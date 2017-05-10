@@ -56,10 +56,16 @@ public class KochRightTask extends Task<List> implements Observer {
         });
         tempList.add((Edge) arg);
         try {
-            Thread.sleep(5);
+            Thread.sleep(2);
         } catch (InterruptedException ex) {
             super.cancelled();
         }
+    }
+
+    @Override
+    public void cancelled(){
+        super.cancelled();
+        koch.cancel();
     }
 
 }

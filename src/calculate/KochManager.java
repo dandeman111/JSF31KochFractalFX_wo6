@@ -65,21 +65,28 @@ public class KochManager  {
         TimeStamp time = new TimeStamp();
         time.setBegin();
         application.clearKochPanel();
-        for(Edge e : list){
-            application.drawEdge(e);
+        synchronized (list){
+            for(Edge e : list){
+                application.drawEdge(e);
+            }
         }
+
         time.setEnd();
         application.setTextDraw(time.toString());
         application.setTextNrEdges(Integer.toString(koch.getNrOfEdges()));
+
     }
 
-    public synchronized void drawOneEdge(){
-        for(Edge e : this.list){
-            Color color = e.color;
-            e.color = Color.WHITE;
-            this.application.drawEdge(e);
-            e.color = color;
+    public  void drawOneEdge(){
+        synchronized (list){
+            for(Edge e : this.list){
+                Color color = e.color;
+                e.color = Color.WHITE;
+                this.application.drawEdge(e);
+                e.color = color;
+            }
         }
+
     }
     public synchronized void addEdge(Edge e){
         list.add(e);
