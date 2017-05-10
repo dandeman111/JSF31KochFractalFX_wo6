@@ -28,7 +28,8 @@ public class KochLeftTask extends Task<List> implements Observer {
         tempList = new ArrayList<Edge>();
         koch.setLevel(level);
         edgesCal = 0;
-        pb.progressProperty().bind(this.progressProperty());
+        progressBar = pb;
+        progressBar.progressProperty().bind(this.progressProperty());
 
 
     }
@@ -59,7 +60,7 @@ public class KochLeftTask extends Task<List> implements Observer {
         });
         tempList.add((Edge) arg);
         try {
-            Thread.sleep(2);
+            Thread.sleep(20);
         } catch (InterruptedException ex) {
             super.cancelled();
         }
