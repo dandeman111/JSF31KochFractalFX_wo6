@@ -2,6 +2,7 @@ package calculate;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 
 import java.util.ArrayList;
@@ -19,8 +20,9 @@ public class KochLeftTask extends Task<List> implements Observer {
     private KochManager kochManager;
     private int edgesCal;
     public ProgressBar progressBar;
+    public Label label;
 
-    public KochLeftTask(List<Edge> list, int level, KochManager kochManager, ProgressBar pb) {
+    public KochLeftTask(List<Edge> list, int level, KochManager kochManager, ProgressBar pb, Label label) {
         this.kochManager = kochManager;
         this.koch = new KochFractal();
         koch.addObserver(this);
@@ -28,9 +30,10 @@ public class KochLeftTask extends Task<List> implements Observer {
         tempList = new ArrayList<Edge>();
         koch.setLevel(level);
         edgesCal = 0;
+        this.label = label;
         progressBar = pb;
         progressBar.progressProperty().bind(this.progressProperty());
-
+        label.textProperty().bind(this.messageProperty());
 
     }
 
@@ -60,7 +63,7 @@ public class KochLeftTask extends Task<List> implements Observer {
         });
         tempList.add((Edge) arg);
         try {
-            Thread.sleep(20);
+            Thread.sleep(5);
         } catch (InterruptedException ex) {
             super.cancelled();
         }

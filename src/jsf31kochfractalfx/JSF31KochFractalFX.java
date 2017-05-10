@@ -63,6 +63,10 @@ public class JSF31KochFractalFX extends Application {
     private Label lblLeft;
     private Label lblRight;
     private Label lblBottom;
+
+    public Label labelNrEdgesLeft;
+    public Label labelNrEdgesRight;
+    public Label labelNrEdgesBottom;
     
     // Koch panel and its size
     private Canvas kochPanel;
@@ -102,6 +106,18 @@ public class JSF31KochFractalFX extends Application {
         lblBottom = new Label("Progres Bottom: ");
         grid.add(pbBottom,5,9);
         grid.add(lblBottom,0,9);
+
+        labelNrEdgesLeft = new Label();
+        labelNrEdgesLeft.setText("Nr edges: ");
+        grid.add(labelNrEdgesLeft, 3, 7);
+
+        labelNrEdgesRight = new Label();
+        labelNrEdgesRight.setText("Nr edges: ");
+        grid.add(labelNrEdgesRight, 3, 8);
+
+        labelNrEdgesBottom = new Label();
+        labelNrEdgesBottom.setText("Nr edges: ");
+        grid.add(labelNrEdgesBottom, 3, 9);
 
         // Labels to present number of edges for Koch fractal
         labelNrEdges = new Label("Nr edges:");
