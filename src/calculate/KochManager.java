@@ -5,6 +5,8 @@
  */
 package calculate;
 
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
 import jsf31kochfractalfx.JSF31KochFractalFX;
 import timeutil.TimeStamp;
@@ -14,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
  *
@@ -25,6 +26,7 @@ public class KochManager  {
     private JSF31KochFractalFX application;
     private KochFractal koch;
     private List<Edge> list;
+    private int counter;
 
     public KochManager(JSF31KochFractalFX application) {
         this.application = application;
@@ -41,21 +43,58 @@ public class KochManager  {
         
 //threads
     //maakt de threadpool
-        ExecutorService executor = Executors.newFixedThreadPool(10);
-    //maakt de lijst met future objecten
-        final Future<List<Edge>> leftCall;
-        final Future<List<Edge>> rightCall;
-        final Future<List<Edge>> bottomCall;
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
     //maakt een instantie van de callable class
         KochLeftTask klt = new KochLeftTask(list,nxt,this, application.pbLeft, application.labelNrEdgesLeft);
         KochRightTask  krt = new KochRightTask(list,nxt, this, application.pbRight, application.labelNrEdgesRight);
         KochBottomTask kbt = new KochBottomTask(list,nxt, this, application.pbBottom, application.labelNrEdgesBottom);
 
+        counter =0;
+        krt.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                if(counter >= 3){
+                    counter =0;
+                    drawEdges();
+                }else{
+                    counter++;
+                }
+            }
+        });
+        klt.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                if(counter == 3){
+                    drawEdges();
+                    counter =0;
+                }else{
+                    counter++;
+                }
+            }
+        });
+        kbt.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                if(counter == 3){
+                    counter =0;
+                    drawEdges();
+                }else{
+                    counter++;
+                }
+            }
+        });
+
+
         executor.submit(kbt);
         executor.submit(krt);
         executor.submit(klt);
         application.setTextCalc(time.toString());
-        application.requestDrawEdges();
+        //application.requestDrawEdges();
+        drawEdges();
+
+
+
 
 
         System.out.println(list.size());
